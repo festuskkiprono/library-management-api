@@ -1,10 +1,17 @@
 package com.festuskiprono.library.controllers;
 
+import com.festuskiprono.library.dtos.AvailableBookCountDto;
+import com.festuskiprono.library.dtos.BookCreateDto;
+import com.festuskiprono.library.dtos.BookUpdateDto;
 import com.festuskiprono.library.entities.Book;
 import com.festuskiprono.library.repositories.BookRepository;
 import com.festuskiprono.library.dtos.BorrowedBookDto;
+import com.festuskiprono.library.services.BookService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.festuskiprono.library.mappers.BookMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +22,7 @@ public class BookController {
 
    private final BookRepository bookRepository;
    private final BookMapper bookMapper;
+   private final BookService bookService;
 
     @GetMapping("/{title}")
     public List<BorrowedBookDto> getBook(
@@ -35,4 +43,66 @@ public class BookController {
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
+
+    @PostMapping
+
+    public ResponseEntity<BorrowedBookDto> createBook(@Valid @RequestBody BookCreateDto bookCreateDto) {
+        Book book = bookMapper.toEntity(bookCreateDto);
+        Book savedBook = bookRepository.save(book);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookMapper.toDto(savedBook));
+    }
+
+    // PUT /books/{id} - Update book (librarian/admin only)
+//    @PutMapping("/{id}")
+//    public ResponseEntity<BorrowedBookDto> updateBook(
+//            @PathVariable int id,
+//            @Valid @RequestBody BookUpdateDto bookUpdateDto) {
+//
+//        var existingBook = bookRepository.findById(id);
+//
+//        if (existingBook.isEmpty()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        bookMapper.updateEntityFromDto(bookUpdateDto, existingBook.get());
+//
+//        Book updatedBook = bookRepository.save(existingBook.get());
+//
+//        BorrowedBookDto responseDto = bookMapper.toDto(updatedBook);
+//        return ResponseEntity.ok(responseDto);
+//    }
+
+    // DELETE /books/{id} - Delete book (librarian/admin only)
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<Void> deleteBook(@PathVariable int id) {
+        if (!bookRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        bookRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // GET /books/genre/{id} - Get books by genre
+    @GetMapping("/genre/{id}")
+    public ResponseEntity<List<BorrowedBookDto>> getBooksByGenre(@PathVariable Short id) {
+        List<Book> books = bookRepository.findByGenreId(id);
+        if (books.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<BorrowedBookDto> bookDtos = books.stream()
+                .map(bookMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(bookDtos);
+    }
+
+    @PutMapping("/return/{id}")
+    public ResponseEntity<AvailableBookCountDto> returnBook(
+            @PathVariable int id) {
+
+        Book updatedBook = bookService.returnBook(id);
+        return ResponseEntity.ok(bookMapper.toAvailableBookCountDto(updatedBook));
+    }
+
 }

@@ -44,6 +44,11 @@ public class Book {
     @Column(name = "available_copies", nullable = false)
     private Integer availableCopies;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id", nullable = false)
+    private Genre genre;
+
+
     @OneToMany(mappedBy = "book")
     private Set<BorrowCartItem> borrowCartItems = new LinkedHashSet<>();
 
