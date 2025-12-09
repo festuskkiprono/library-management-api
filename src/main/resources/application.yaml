@@ -1,0 +1,8 @@
+spring:
+  application:
+    name:  School Library Management System
+  datasource:
+      url: jdbc:postgresql://localhost:5432/school_library_db
+      username: postgres
+      password: Datsanny01
+      driver-class-name: org.postgresql.Driver
