@@ -1,4 +1,4 @@
-package com.festuskiprono.library.dtos;
+package com.festuskiprono.library.dtos.booksDtos;
 
 public class BorrowedBookDto {
     public String author;

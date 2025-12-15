@@ -1,10 +1,10 @@
 package com.festuskiprono.library.mappers;
 
-import com.festuskiprono.library.dtos.AvailableBookCountDto;
-import com.festuskiprono.library.dtos.BookCreateDto;
+import com.festuskiprono.library.dtos.booksDtos.AvailableBookCountDto;
+import com.festuskiprono.library.dtos.booksDtos.BookCreateDto;
 import com.festuskiprono.library.entities.Book;
-import com.festuskiprono.library.dtos.BorrowedBookDto;
-import com.festuskiprono.library.dtos.BookUpdateDto;
+import com.festuskiprono.library.dtos.booksDtos.BorrowedBookDto;
+import com.festuskiprono.library.dtos.booksDtos.BookUpdateDto;
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

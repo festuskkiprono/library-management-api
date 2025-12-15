@@ -1,4 +1,4 @@
-package com.festuskiprono.library.dtos;
+package com.festuskiprono.library.dtos.booksDtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

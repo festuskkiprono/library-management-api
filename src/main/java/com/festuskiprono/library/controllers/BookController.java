@@ -1,11 +1,10 @@
 package com.festuskiprono.library.controllers;
 
-import com.festuskiprono.library.dtos.AvailableBookCountDto;
-import com.festuskiprono.library.dtos.BookCreateDto;
-import com.festuskiprono.library.dtos.BookUpdateDto;
+import com.festuskiprono.library.dtos.booksDtos.AvailableBookCountDto;
+import com.festuskiprono.library.dtos.booksDtos.BookCreateDto;
 import com.festuskiprono.library.entities.Book;
 import com.festuskiprono.library.repositories.BookRepository;
-import com.festuskiprono.library.dtos.BorrowedBookDto;
+import com.festuskiprono.library.dtos.booksDtos.BorrowedBookDto;
 import com.festuskiprono.library.services.BookService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -53,27 +52,7 @@ public class BookController {
                 .body(bookMapper.toDto(savedBook));
     }
 
-    // PUT /books/{id} - Update book (librarian/admin only)
-//    @PutMapping("/{id}")
-//    public ResponseEntity<BorrowedBookDto> updateBook(
-//            @PathVariable int id,
-//            @Valid @RequestBody BookUpdateDto bookUpdateDto) {
-//
-//        var existingBook = bookRepository.findById(id);
-//
-//        if (existingBook.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        bookMapper.updateEntityFromDto(bookUpdateDto, existingBook.get());
-//
-//        Book updatedBook = bookRepository.save(existingBook.get());
-//
-//        BorrowedBookDto responseDto = bookMapper.toDto(updatedBook);
-//        return ResponseEntity.ok(responseDto);
-//    }
 
-    // DELETE /books/{id} - Delete book (librarian/admin only)
     @DeleteMapping("/{id}")
 
     public ResponseEntity<Void> deleteBook(@PathVariable int id) {

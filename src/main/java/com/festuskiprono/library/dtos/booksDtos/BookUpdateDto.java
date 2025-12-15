@@ -1,4 +1,4 @@
-package com.festuskiprono.library.dtos;
+package com.festuskiprono.library.dtos.booksDtos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
