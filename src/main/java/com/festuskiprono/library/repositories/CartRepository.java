@@ -3,5 +3,7 @@ package com.festuskiprono.library.repositories;
 import com.festuskiprono.library.entities.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CartRepository extends JpaRepository<Cart,Long> {
+import java.util.UUID;
+
+public interface CartRepository extends JpaRepository<Cart, UUID> {
 }

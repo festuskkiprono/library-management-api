@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
+
+import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "borrow_cart_items")
-public class BorrowCartItem {
+@Table(name = "cart_items")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -20,16 +21,27 @@ public class BorrowCartItem {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "borrow_cart_id", nullable = false)
-    private BorrowCart borrowCart;
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @NotNull
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @ColumnDefault("1")
+    @Column(name = "copies", nullable = false)
+    private Integer copies;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
 
 }
