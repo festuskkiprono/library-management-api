@@ -9,12 +9,14 @@ import com.festuskiprono.library.mappers.CartMapper;
 import com.festuskiprono.library.repositories.BookRepository;
 import com.festuskiprono.library.repositories.CartItemRepository;
 import com.festuskiprono.library.repositories.CartRepository;
+import com.festuskiprono.library.services.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +27,7 @@ public class BorrowCartController {
     private final CartMapper cartMapper;
     private final BookRepository bookRepository;
     private final CartItemRepository cartItemRepository;
+    private final BookService bookService;
 
     @PostMapping
     public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder)
@@ -37,7 +40,7 @@ public class BorrowCartController {
 
     }
     @PostMapping("/{cartId}/items")
-    public ResponseEntity<CartItemDto> addToCart(
+    public ResponseEntity<?> addToCart(
             @PathVariable UUID cartId,
             @RequestBody AddBookToCartRequest request) {
 
@@ -58,10 +61,13 @@ public class BorrowCartController {
 
         CartItem cartItem;
         if (existingCartItem.isPresent()) {
-            // Book exists, increment quantity
-            cartItem = existingCartItem.get();
-            cartItem.setCopies(cartItem.getCopies() + 1);
-        } else {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "message", "You can only borrow one copy of this book."
+                    ));
+        }
+        else {
             // New book, create new cart item
             cartItem = new CartItem();
             cartItem.setBook(book);
@@ -87,4 +93,39 @@ public class BorrowCartController {
         var cartDto = cartMapper.toDto(cart);
         return ResponseEntity.ok(cartDto);
     }
+    @DeleteMapping("/{cartId}/items/{bookId}")
+    public ResponseEntity<?> removeBookFromCart(
+            @PathVariable UUID cartId,
+            @PathVariable Long bookId
+    ) {
+        var cart = cartRepository.findById(cartId).orElse(null);
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Cart was not found"));
+        }
+
+        boolean removed = cart.removeItem(bookId);
+
+        if (!removed) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Book is not in the cart"));
+        }
+        bookService.returnBook(bookId.intValue());
+        cartRepository.save(cart);
+        return ResponseEntity.noContent().build();
+    }
+    @DeleteMapping("/{cartId}/items")
+    public ResponseEntity<?> clearCart(@PathVariable UUID cartId) {
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
+        if (cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+        bookService.returnBooksFromCart(cart.getItems());
+
+        cart.clear();
+        cartRepository.save(cart);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

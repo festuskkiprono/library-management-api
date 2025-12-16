@@ -20,6 +20,7 @@ public class SecurityConfig {
                         .csrf( c->c.disable())
                 .authorizeHttpRequests(c->
                         c.anyRequest().permitAll()
+
         );
         //Disable csrf
 

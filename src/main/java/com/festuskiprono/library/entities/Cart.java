@@ -30,6 +30,26 @@ public class Cart {
     protected void onCreate() {
         createdAt = Instant.now();
     }
+    public CartItem getItem(Long bookId) {
+        return items.stream()
+                .filter(item -> item.getBook().getId().equals(bookId))
+                .findFirst()
+                .orElse(null);
+    }
+    public boolean removeItem(Long bookId) {
+        var cartItem = getItem(bookId);
+        if (cartItem == null) {
+            return false;
+        }
+        items.remove(cartItem);
+        cartItem.setCart(null);
+        return true;
+    }
+    public void clear()
+    {
+        items.clear();
+    }
+
 
 
 }
