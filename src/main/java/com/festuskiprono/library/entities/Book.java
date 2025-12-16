@@ -50,7 +50,7 @@ public class Book {
 
 
     @OneToMany(mappedBy = "book")
-    private Set<BorrowCartItem> borrowCartItems = new LinkedHashSet<>();
+    private Set<CartItem> borrowCartItems = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "book")
     private Set<BorrowedBook> borrowedBooks = new LinkedHashSet<>();

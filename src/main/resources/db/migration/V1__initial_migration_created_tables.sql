@@ -34,33 +34,8 @@ CREATE TABLE user_profiles (
                                        REFERENCES library_users(id)
                                        ON DELETE CASCADE
 );
-CREATE TABLE borrow_carts (
-                              id UUID PRIMARY KEY,
-                              user_id BIGINT NOT NULL,
-                              updated_at TIMESTAMPTZ,
 
-                              CONSTRAINT fk_cart_user
-                                  FOREIGN KEY (user_id)
-                                      REFERENCES library_users(id)
-                                      ON DELETE CASCADE
-);
-CREATE TABLE borrow_cart_items (
-                                   id BIGSERIAL PRIMARY KEY,
-                                   borrow_cart_id UUID NOT NULL,
-                                   book_id BIGINT NOT NULL,
-                                   quantity INTEGER NOT NULL CHECK (quantity > 0),
 
-                                   CONSTRAINT fk_cartitem_cart
-                                       FOREIGN KEY (borrow_cart_id)
-                                           REFERENCES borrow_carts(id)
-                                           ON DELETE CASCADE,
-
-                                   CONSTRAINT fk_cartitem_book
-                                       FOREIGN KEY (book_id)
-                                           REFERENCES books(id),
-
-                                   CONSTRAINT uc_cart_book UNIQUE (borrow_cart_id, book_id)
-);
 CREATE TABLE borrow_transactions (
                                      id BIGSERIAL PRIMARY KEY,
                                      user_id BIGINT NOT NULL,
