@@ -70,5 +70,27 @@ public class AuthController {
         var token = authHeader.replace("Bearer ", "");
         return  jwtService.validateToken(token);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponse> refresh( @CookieValue(value = "refreshToken") String refreshToken)
+    {
+        //Goal: To refresh access token
+
+        //Receive a cookie named refreshToken which we had created  earlier on
+
+        //validate the cookie
+        if(!jwtService.validateToken(refreshToken))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        }
+        var userId=jwtService.getUserIdFromToken(refreshToken);
+        var user = userRepository.findById(userId).orElseThrow();
+        var accessToken= jwtService.generateAccessToken(user);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken));//Return the refreshed/ new acces token in the body
+        //Use epochconverter.com to check expiation of token
+
+    }
 }
 
