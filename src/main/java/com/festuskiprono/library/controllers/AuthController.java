@@ -92,5 +92,41 @@ public class AuthController {
         //Use epochconverter.com to check expiation of token
 
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> me()  // Endpoint to get currently authenticated user's profile
+    {
+        //From JwtAuthenticationFilter
+
+        // WHY ACCESS CURRENT USER?
+        // 1. Display user profile: Show name, email, avatar in UI (navbar, profile page)
+        // 2. Personalization: Customize dashboard, recommendations, settings based on who's logged in
+        // 3. Authorization checks: Verify user has permission to access/modify resources
+        // 4. Audit logging: Track which user performed actions (orders, posts, updates)
+        // 5. User-specific data: Filter content to show only what belongs to this user
+        // 6. Session validation: Confirm token is valid and user still exists in system
+
+        // Extracting the current principal (user ID) from the security context
+        // SecurityContextHolder stores authentication info set by JwtAuthenticationFilter
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        //We are sending the following From JwtAuthenticationFilter
+        //SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        var userId = (Long)authentication.getPrincipal(); // Principal contains userId we set in JWT filter
+
+        // Lookup the user in database to get full user details
+        // Token only contains userId - we need to fetch complete profile (name, email, etc.)
+        var user = userRepository.findById(userId).orElse(null);
+        if(user==null)  // User might be deleted after token was issued
+        {
+            return ResponseEntity.notFound().build(); // 404 - Token valid but user no longer exists
+        }
+
+        // Return result as DTO to avoid exposing sensitive fields (password hash, internal IDs)
+        var userDto = userMapper.toDto(user);
+        System.out.println(userDto); // Debug logging (remove in production)
+        return ResponseEntity.ok(userDto); // 200 OK with user profile data
+    }
 }
 
