@@ -202,13 +202,7 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>11.16.0</version>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/school_library_db</url>
-                    <user>postgres</user>
-                    <password>Datsanny01</password>
-                    <cleanDisabled>false</cleanDisabled>
-                    <baselineOnMigrate>true</baselineOnMigrate>
-                </configuration>
+
 
                 <dependencies>
                     <!-- PostgresSQL Driver for Flyway -->
