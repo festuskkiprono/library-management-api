@@ -17,6 +17,7 @@ public class BorrowedBook {
     @Column(name = "id", nullable = false)
     private Long id;
 
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", nullable = false)
@@ -24,5 +25,12 @@ public class BorrowedBook {
 
     @Column(name = "returned_date")
     private LocalDate returnedDate;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private BorrowTransaction borrowTransaction;
+
+
 
 }

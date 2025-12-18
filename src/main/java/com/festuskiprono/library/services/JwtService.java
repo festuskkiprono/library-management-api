@@ -1,6 +1,7 @@
 package com.festuskiprono.library.services;
 
 import com.festuskiprono.library.config.JwtConfig;
+import com.festuskiprono.library.entities.Role;
 import com.festuskiprono.library.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -19,9 +20,6 @@ public class JwtService {
     @Value("${spring.jwt.secret}")
     private String secret;
     private final JwtConfig jwtConfig;
-
-
-
 
     public String generateAccessToken(User user)
     {
@@ -80,10 +78,10 @@ public class JwtService {
         return Long.valueOf(getClaims(token).getSubject());
     }
 
-    /*public Role getUserRoleFromToken(String token)
+    public Role getUserRoleFromToken(String token)
     {
         return Role.valueOf(getClaims(token).get("role", String.class));
-    }*/
+    }
 }
 
 

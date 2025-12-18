@@ -29,7 +29,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
 
-    @GetMapping()
+    /*@GetMapping()
     public Iterable<UserDto> getAllUsers( @RequestParam(required = false,defaultValue ="",name="sort") String sortBy)
     {
         if(!Set.of("name","email").contains(sortBy))
@@ -37,6 +37,20 @@ public class UserController {
         return userRepository.findAll()
                 .stream()
                 .map(user ->userMapper.toDto(user)).toList();
+    }*/
+    @GetMapping()
+    public ResponseEntity<?> getAllUsers( @RequestParam(required = false,defaultValue ="",name="sort") String sortBy)
+    {
+        if(!Set.of("name","email").contains(sortBy))
+            sortBy = "name";
+        try {
+            var users =  userRepository.findAll()
+                    .stream()
+                    .map(user ->userMapper.toDto(user)).toList();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id)
@@ -47,18 +61,7 @@ public class UserController {
         var userDto = new UserDto(user.getId(),user.getName(),user.getEmail());
         return ResponseEntity.ok(userDto);
     }
-       /* @PostMapping()
-    public ResponseEntity <UserDto> addUser(@Valid @RequestBody RegisterUserRequest request,
-                                            UriComponentsBuilder builder)
-    {
-        var user = userMapper.toEntity(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        var userDto=userMapper.toDto(user);
 
-        var uri = builder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(userDto);
-    }*/
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable(name="id") long id,@RequestBody UpdateUserRequest request)
     {
