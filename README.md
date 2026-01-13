@@ -157,29 +157,7 @@ jwt.refresh-token-expiration=604800   # 7 days in seconds
 jwt.secret=your-secret-key-here       # Use strong secret in production
 ```
 
-### Running Locally
 
-**Option 1: Maven Command**
-```bash
-# Clone repository
-git clone <repository-url>
-cd school-library-backend
-
-# Run application
-mvn spring-boot:run
-```
-
-**Option 2: IDE (IntelliJ)**
-1. Import as Maven project
-2. Run `LibraryApplication.java` main method
-
-**Option 3: Build JAR and Run**
-```bash
-mvn clean package
-java -jar target/school-library-backend-0.0.1-SNAPSHOT.jar
-```
-
-**Application will start on:** `http://localhost:8080`
 
 ### Running Tests
 ```bash
@@ -503,8 +481,6 @@ POST /carts/{cartId}/items
 
 
 
-##  Author
 
-**Festus Kiprono**
 
 ---
